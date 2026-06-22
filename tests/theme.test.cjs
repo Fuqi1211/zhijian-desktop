@@ -77,3 +77,49 @@ test('sidebar constrains its height and delegates scrolling to the notes list', 
   assert.match(html, /\.notes-list \{[^}]*min-height: 0;[^}]*overflow-y: auto;[^}]*overscroll-behavior: contain;/s);
   assert.match(html, /\.sidebar-footer \{[^}]*flex: 0 0 auto;/s);
 });
+
+test('palette picker offers four persisted color presets', () => {
+  for (const [value, label] of [
+    ['warm', '暖纸陶土 · 推荐'],
+    ['blue', '雾霭蓝'],
+    ['plum', '柔和紫灰'],
+    ['mono', '极简黑白']
+  ]) {
+    assert.match(html, new RegExp(`data-palette="${value}"[^>]*role="radio"[^]*?${label}`));
+  }
+  assert.match(html, /\[data-palette="blue"\] \{/);
+  assert.match(html, /\[data-theme="dark"\]\[data-palette="plum"\] \{/);
+  assert.doesNotMatch(html, /#4f7a60/i);
+});
+
+test('palette selection updates active state and local storage', () => {
+  const setPaletteSource = extractFunction('setPalette');
+  const harness = new Function(`
+    let palette = 'warm';
+    const PALETTE_KEY = 'zhijian.palette.v1';
+    const PALETTE_NAMES = { warm: '暖纸陶土', blue: '雾霭蓝', plum: '柔和紫灰', mono: '极简黑白' };
+    const document = { documentElement: { dataset: {} } };
+    const writes = [];
+    const localStorage = { setItem: (key, value) => writes.push([key, value]) };
+    const options = Object.keys(PALETTE_NAMES).map(value => ({
+      dataset: { palette: value },
+      active: false,
+      checked: 'false',
+      classList: { toggle: (_, active) => { options.find(item => item.dataset.palette === value).active = active; } },
+      setAttribute: (_, checked) => { options.find(item => item.dataset.palette === value).checked = checked; }
+    }));
+    const $$ = () => options;
+    const paletteButton = { title: '', setAttribute: () => {} };
+    const elements = { paletteButton };
+    ${setPaletteSource}
+    return { setPalette, state: () => ({ palette, dataset: document.documentElement.dataset.palette, writes, options }) };
+  `)();
+
+  harness.setPalette('plum');
+  const state = harness.state();
+  assert.equal(state.palette, 'plum');
+  assert.equal(state.dataset, 'plum');
+  assert.deepEqual(state.writes, [['zhijian.palette.v1', 'plum']]);
+  assert.equal(state.options.find(option => option.dataset.palette === 'plum').active, true);
+  assert.equal(state.options.find(option => option.dataset.palette === 'plum').checked, 'true');
+});

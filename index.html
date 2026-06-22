@@ -8,42 +8,163 @@
   <style>
     :root {
       color-scheme: light;
-      --ink: #29372f;
-      --ink-soft: #69766d;
-      --ink-faint: #929d95;
-      --paper: #edf3e9;
-      --paper-deep: #dfe9dc;
-      --sheet: #f8fbf4;
-      --panel: rgba(229, 238, 224, 0.9);
-      --line: rgba(55, 83, 64, 0.13);
-      --line-strong: rgba(55, 83, 64, 0.22);
-      --accent: #4f7a60;
-      --accent-dark: #356047;
-      --accent-soft: #d2e5d5;
-      --accent-contrast: #f7fbf4;
-      --moss: #748a61;
-      --shadow: 0 24px 70px rgba(42, 73, 52, 0.13);
+      --ink: #3f342e;
+      --ink-soft: #756862;
+      --ink-faint: #9b8e86;
+      --paper: #f3ede2;
+      --paper-deep: #e8dfd1;
+      --sheet: #fffaf1;
+      --panel: rgba(240, 232, 219, 0.92);
+      --line: rgba(91, 67, 52, 0.13);
+      --line-strong: rgba(91, 67, 52, 0.22);
+      --accent: #9c5c43;
+      --accent-dark: #7f4531;
+      --accent-soft: #ead1c3;
+      --accent-contrast: #fffaf1;
+      --moss: #967258;
+      --glow-one: rgba(178, 106, 76, 0.12);
+      --glow-two: rgba(181, 147, 104, 0.1);
+      --shadow: 0 24px 70px rgba(82, 54, 40, 0.13);
       --sans: "MiSans", "HarmonyOS Sans SC", "Microsoft YaHei UI", sans-serif;
       --serif: "LXGW WenKai", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", serif;
     }
 
+    [data-palette="blue"] {
+      --ink: #303846;
+      --ink-soft: #687282;
+      --ink-faint: #929ca9;
+      --paper: #edf1f5;
+      --paper-deep: #e1e7ee;
+      --sheet: #f9fbfd;
+      --panel: rgba(231, 237, 244, 0.92);
+      --line: rgba(54, 72, 94, 0.13);
+      --line-strong: rgba(54, 72, 94, 0.22);
+      --accent: #557596;
+      --accent-dark: #405f80;
+      --accent-soft: #d5e1ee;
+      --accent-contrast: #f8fbff;
+      --moss: #7689a2;
+      --glow-one: rgba(88, 119, 154, 0.12);
+      --glow-two: rgba(124, 143, 169, 0.1);
+      --shadow: 0 24px 70px rgba(43, 58, 79, 0.13);
+    }
+
+    [data-palette="plum"] {
+      --ink: #3c333d;
+      --ink-soft: #736673;
+      --ink-faint: #998d98;
+      --paper: #f1ecef;
+      --paper-deep: #e5dde3;
+      --sheet: #fbf8fa;
+      --panel: rgba(237, 230, 235, 0.92);
+      --line: rgba(78, 58, 75, 0.13);
+      --line-strong: rgba(78, 58, 75, 0.22);
+      --accent: #806178;
+      --accent-dark: #654a5e;
+      --accent-soft: #e4d5e0;
+      --accent-contrast: #fff9fd;
+      --moss: #887285;
+      --glow-one: rgba(128, 97, 120, 0.12);
+      --glow-two: rgba(165, 134, 154, 0.1);
+      --shadow: 0 24px 70px rgba(62, 45, 58, 0.13);
+    }
+
+    [data-palette="mono"] {
+      --ink: #2d2d2b;
+      --ink-soft: #676966;
+      --ink-faint: #92948f;
+      --paper: #efefec;
+      --paper-deep: #e2e3df;
+      --sheet: #fafaf7;
+      --panel: rgba(235, 235, 232, 0.92);
+      --line: rgba(54, 57, 54, 0.13);
+      --line-strong: rgba(54, 57, 54, 0.22);
+      --accent: #565b58;
+      --accent-dark: #3f4441;
+      --accent-soft: #d9dcd9;
+      --accent-contrast: #fafaf7;
+      --moss: #777a75;
+      --glow-one: rgba(83, 89, 85, 0.08);
+      --glow-two: rgba(119, 122, 117, 0.07);
+      --shadow: 0 24px 70px rgba(36, 39, 37, 0.12);
+    }
+
     [data-theme="dark"] {
       color-scheme: dark;
-      --ink: #e1eadf;
-      --ink-soft: #a8b5aa;
-      --ink-faint: #78847a;
-      --paper: #18231c;
-      --paper-deep: #223027;
-      --sheet: #1d2921;
-      --panel: rgba(27, 41, 32, 0.94);
-      --line: rgba(225, 234, 223, 0.1);
-      --line-strong: rgba(225, 234, 223, 0.18);
-      --accent: #7eab8c;
-      --accent-dark: #a4c8ad;
-      --accent-soft: #294638;
-      --accent-contrast: #142219;
-      --moss: #a1b58a;
+      --ink: #eee3da;
+      --ink-soft: #bcaea5;
+      --ink-faint: #82766f;
+      --paper: #211b18;
+      --paper-deep: #2d2420;
+      --sheet: #29211d;
+      --panel: rgba(38, 30, 26, 0.94);
+      --line: rgba(238, 227, 218, 0.1);
+      --line-strong: rgba(238, 227, 218, 0.18);
+      --accent: #c98165;
+      --accent-dark: #e5a088;
+      --accent-soft: #523328;
+      --accent-contrast: #1d130f;
+      --moss: #c3a07f;
+      --glow-one: rgba(201, 129, 101, 0.11);
+      --glow-two: rgba(195, 160, 127, 0.08);
       --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+    }
+
+    [data-theme="dark"][data-palette="blue"] {
+      --ink: #e4e9f0;
+      --ink-soft: #adb8c6;
+      --ink-faint: #778391;
+      --paper: #171c23;
+      --paper-deep: #222a34;
+      --sheet: #1d232c;
+      --panel: rgba(27, 34, 43, 0.94);
+      --line: rgba(228, 233, 240, 0.1);
+      --line-strong: rgba(228, 233, 240, 0.18);
+      --accent: #82a6cf;
+      --accent-dark: #a5c1df;
+      --accent-soft: #293c52;
+      --accent-contrast: #101820;
+      --moss: #9dafc5;
+      --glow-one: rgba(130, 166, 207, 0.11);
+      --glow-two: rgba(157, 175, 197, 0.08);
+    }
+
+    [data-theme="dark"][data-palette="plum"] {
+      --ink: #eee5ec;
+      --ink-soft: #bcaeb9;
+      --ink-faint: #81747f;
+      --paper: #20191f;
+      --paper-deep: #2c222a;
+      --sheet: #281f26;
+      --panel: rgba(37, 28, 35, 0.94);
+      --line: rgba(238, 229, 236, 0.1);
+      --line-strong: rgba(238, 229, 236, 0.18);
+      --accent: #b58eac;
+      --accent-dark: #d0aec8;
+      --accent-soft: #493344;
+      --accent-contrast: #1c141b;
+      --moss: #b69ead;
+      --glow-one: rgba(181, 142, 172, 0.11);
+      --glow-two: rgba(182, 158, 173, 0.08);
+    }
+
+    [data-theme="dark"][data-palette="mono"] {
+      --ink: #e8e9e6;
+      --ink-soft: #afb2ad;
+      --ink-faint: #777b76;
+      --paper: #181a18;
+      --paper-deep: #242724;
+      --sheet: #1e211f;
+      --panel: rgba(28, 31, 29, 0.94);
+      --line: rgba(232, 233, 230, 0.1);
+      --line-strong: rgba(232, 233, 230, 0.18);
+      --accent: #aeb5b0;
+      --accent-dark: #c8ceca;
+      --accent-soft: #353b37;
+      --accent-contrast: #141615;
+      --moss: #a5aaa5;
+      --glow-one: rgba(174, 181, 176, 0.08);
+      --glow-two: rgba(165, 170, 165, 0.06);
     }
 
     * { box-sizing: border-box; }
@@ -55,8 +176,8 @@
       overflow: hidden;
       color: var(--ink);
       background:
-        radial-gradient(circle at 86% 14%, rgba(86, 130, 103, 0.12), transparent 27%),
-        radial-gradient(circle at 18% 92%, rgba(150, 169, 112, 0.09), transparent 31%),
+        radial-gradient(circle at 86% 14%, var(--glow-one), transparent 27%),
+        radial-gradient(circle at 18% 92%, var(--glow-two), transparent 31%),
         var(--paper);
       font-family: var(--sans);
       -webkit-font-smoothing: antialiased;
@@ -424,6 +545,7 @@
     }
 
     .sidebar-footer {
+      position: relative;
       display: flex;
       flex: 0 0 auto;
       align-items: center;
@@ -472,6 +594,84 @@
     }
 
     #themeSelect option { color: var(--ink); background: var(--sheet); }
+
+    .palette-button { position: relative; }
+
+    .palette-button::after {
+      content: "";
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border: 1px solid var(--sheet);
+      border-radius: 50%;
+    }
+
+    .palette-menu {
+      position: absolute;
+      z-index: 20;
+      left: 16px;
+      bottom: calc(100% + 8px);
+      width: 204px;
+      padding: 8px;
+      background: color-mix(in srgb, var(--sheet) 96%, transparent);
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      animation: palette-in 150ms ease-out both;
+    }
+
+    @keyframes palette-in {
+      from { opacity: 0; transform: translateY(5px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .palette-menu-title {
+      padding: 5px 7px 7px;
+      color: var(--ink-faint);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .12em;
+    }
+
+    .palette-option {
+      display: grid;
+      grid-template-columns: 27px 1fr 16px;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 8px 7px;
+      color: var(--ink-soft);
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .palette-option:hover,
+    .palette-option.active { color: var(--ink); background: var(--paper-deep); }
+
+    .palette-swatch {
+      width: 27px;
+      height: 20px;
+      background: var(--swatch-bg);
+      border: 1px solid color-mix(in srgb, var(--swatch-accent) 35%, transparent);
+      border-radius: 6px;
+      box-shadow: inset 8px 0 0 var(--swatch-accent);
+    }
+
+    .palette-swatch.warm { --swatch-bg: #f3ede2; --swatch-accent: #9c5c43; }
+    .palette-swatch.blue { --swatch-bg: #edf1f5; --swatch-accent: #557596; }
+    .palette-swatch.plum { --swatch-bg: #f1ecef; --swatch-accent: #806178; }
+    .palette-swatch.mono { --swatch-bg: #efefec; --swatch-accent: #565b58; }
+
+    .palette-option-label { font-size: 12px; font-weight: 680; }
+    .palette-option-check { color: var(--accent); opacity: 0; font-size: 13px; font-weight: 800; }
+    .palette-option.active .palette-option-check { opacity: 1; }
 
     .new-note {
       display: flex;
@@ -1062,6 +1262,24 @@
             <option value="dark">深色</option>
           </select>
         </label>
+        <button class="icon-button palette-button" id="paletteButton" title="选择配色" aria-label="选择配色" aria-haspopup="true" aria-expanded="false" aria-controls="paletteMenu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h1.2a2.1 2.1 0 0 0 0-4.2h-1a1.7 1.7 0 0 1 0-3.4H15A6 6 0 0 0 15 3Z"/><circle cx="7.8" cy="9" r=".9" fill="currentColor" stroke="none"/><circle cx="10.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <div class="palette-menu" id="paletteMenu" role="radiogroup" aria-label="界面配色" hidden>
+          <div class="palette-menu-title">选择配色</div>
+          <button class="palette-option active" type="button" data-palette="warm" role="radio" aria-checked="true">
+            <span class="palette-swatch warm" aria-hidden="true"></span><span class="palette-option-label">暖纸陶土 · 推荐</span><span class="palette-option-check" aria-hidden="true">✓</span>
+          </button>
+          <button class="palette-option" type="button" data-palette="blue" role="radio" aria-checked="false">
+            <span class="palette-swatch blue" aria-hidden="true"></span><span class="palette-option-label">雾霭蓝</span><span class="palette-option-check" aria-hidden="true">✓</span>
+          </button>
+          <button class="palette-option" type="button" data-palette="plum" role="radio" aria-checked="false">
+            <span class="palette-swatch plum" aria-hidden="true"></span><span class="palette-option-label">柔和紫灰</span><span class="palette-option-check" aria-hidden="true">✓</span>
+          </button>
+          <button class="palette-option" type="button" data-palette="mono" role="radio" aria-checked="false">
+            <span class="palette-swatch mono" aria-hidden="true"></span><span class="palette-option-label">极简黑白</span><span class="palette-option-check" aria-hidden="true">✓</span>
+          </button>
+        </div>
         <button class="icon-button" id="importButton" title="导入 JSON" aria-label="导入笔记">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v3h16v-3"/></svg>
         </button>
@@ -1152,6 +1370,8 @@
       const STORAGE_KEY = 'zhijian.notes.v1';
       const THEME_MODE_KEY = 'zhijian.theme.mode.v2';
       const LEGACY_THEME_KEY = 'zhijian.theme.v1';
+      const PALETTE_KEY = 'zhijian.palette.v1';
+      const PALETTE_NAMES = Object.freeze({ warm: '暖纸陶土', blue: '雾霭蓝', plum: '柔和紫灰', mono: '极简黑白' });
       const RECOMMENDED_TAGS = ['工作', '学习', '生活', '灵感', '计划', '阅读', '待办', '项目'];
       const ALLOWED_TAGS = new Set(['P','DIV','BR','B','STRONG','I','EM','U','S','H1','H2','H3','BLOCKQUOTE','UL','OL','LI','A','CODE','PRE','SPAN']);
       const $ = (selector) => document.querySelector(selector);
@@ -1167,7 +1387,8 @@
         charCount: $('#charCount'), readTime: $('#readTime'), editorFooter: $('#editorFooter'),
         toast: $('#toast'), toastText: $('#toastText'), undo: $('#undoButton'),
         commandDialog: $('#commandDialog'), commandInput: $('#commandInput'),
-        commandResults: $('#commandResults'), fileInput: $('#fileInput'), themeSelect: $('#themeSelect')
+        commandResults: $('#commandResults'), fileInput: $('#fileInput'), themeSelect: $('#themeSelect'),
+        paletteButton: $('#paletteButton'), paletteMenu: $('#paletteMenu')
       };
 
       const now = Date.now();
@@ -1203,6 +1424,7 @@
       let currentTagSuggestions = [];
       let activeSuggestionIndex = 0;
       let themeMode = 'auto';
+      let palette = 'warm';
 
       function loadNotes() {
         try {
@@ -1617,6 +1839,25 @@
         if (themeMode === 'auto') applyTheme(getTimedTheme());
       }
 
+      function setPalette(nextPalette, persistPalette = true) {
+        palette = PALETTE_NAMES[nextPalette] ? nextPalette : 'warm';
+        document.documentElement.dataset.palette = palette;
+        $$('.palette-option').forEach(button => {
+          const isActive = button.dataset.palette === palette;
+          button.classList.toggle('active', isActive);
+          button.setAttribute('aria-checked', String(isActive));
+        });
+        elements.paletteButton.title = `当前配色：${PALETTE_NAMES[palette]}`;
+        elements.paletteButton.setAttribute('aria-label', `选择配色，当前为${PALETTE_NAMES[palette]}`);
+        if (persistPalette) localStorage.setItem(PALETTE_KEY, palette);
+      }
+
+      function togglePaletteMenu(forceOpen) {
+        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : elements.paletteMenu.hidden;
+        elements.paletteMenu.hidden = !shouldOpen;
+        elements.paletteButton.setAttribute('aria-expanded', String(shouldOpen));
+      }
+
       function exportNotes() {
         flushSave();
         const payload = { app: '纸间', version: 1, exportedAt: new Date().toISOString(), notes };
@@ -1751,6 +1992,14 @@
       $('#deleteButton').addEventListener('click', deleteCurrent);
       $('#backButton').addEventListener('click', () => elements.app.classList.remove('note-open'));
       elements.themeSelect.addEventListener('change', () => setThemeMode(elements.themeSelect.value));
+      elements.paletteButton.addEventListener('click', () => togglePaletteMenu());
+      elements.paletteMenu.addEventListener('click', event => {
+        const option = event.target.closest('[data-palette]');
+        if (!option) return;
+        setPalette(option.dataset.palette);
+        togglePaletteMenu(false);
+        elements.paletteButton.focus();
+      });
       $('#exportButton').addEventListener('click', exportNotes);
       $('#importButton').addEventListener('click', () => elements.fileInput.click());
       elements.fileInput.addEventListener('change', () => importNotes(elements.fileInput.files[0]));
@@ -1768,11 +2017,21 @@
         if (event.target === elements.commandDialog) elements.commandDialog.close();
       });
 
+      document.addEventListener('click', event => {
+        if (elements.paletteMenu.hidden) return;
+        if (!elements.paletteMenu.contains(event.target) && !elements.paletteButton.contains(event.target)) togglePaletteMenu(false);
+      });
+
       document.addEventListener('keydown', event => {
         const mod = event.ctrlKey || event.metaKey;
         if (mod && event.key.toLowerCase() === 'n') { event.preventDefault(); createNote(); }
         if (mod && event.key.toLowerCase() === 'k') { event.preventDefault(); openCommandPalette(); }
         if (mod && event.key.toLowerCase() === 's') { event.preventDefault(); flushSave(); showToast('笔记已保存'); }
+        if (event.key === 'Escape' && !elements.paletteMenu.hidden) {
+          togglePaletteMenu(false);
+          elements.paletteButton.focus();
+          return;
+        }
         if (event.key === 'Escape' && !elements.commandDialog.open && window.innerWidth <= 780) elements.app.classList.remove('note-open');
       });
 
@@ -1784,6 +2043,8 @@
         refreshTimedTheme();
       }, 60000);
 
+      const savedPalette = localStorage.getItem(PALETTE_KEY);
+      setPalette(PALETTE_NAMES[savedPalette] ? savedPalette : 'warm');
       const savedThemeMode = localStorage.getItem(THEME_MODE_KEY);
       setThemeMode(['auto', 'light', 'dark'].includes(savedThemeMode) ? savedThemeMode : 'auto');
       localStorage.removeItem(LEGACY_THEME_KEY);
@@ -1800,8 +2061,11 @@
         resolveTheme,
         setThemeMode,
         getThemeMode: () => themeMode,
+        setPalette,
+        getPalette: () => palette,
         storageKey: STORAGE_KEY,
-        themeModeKey: THEME_MODE_KEY
+        themeModeKey: THEME_MODE_KEY,
+        paletteKey: PALETTE_KEY
       };
     })();
   </script>
