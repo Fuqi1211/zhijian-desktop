@@ -15,6 +15,7 @@ export type ThemeMode = 'auto' | 'light' | 'dark'
 export type ResolvedTheme = 'light' | 'dark'
 export type Palette = 'warm' | 'blue' | 'plum' | 'mono'
 export type NoteFilter = 'all' | 'pinned'
+export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 export type UpdatePhase =
   | 'idle'
   | 'checking'
