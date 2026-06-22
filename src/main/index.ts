@@ -1,7 +1,11 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'node:path'
+import { registerDesktopApi } from './services/desktop-api'
+import type { NoteRepository } from './db/repository'
 
 let mainWindow: BrowserWindow | null = null
+let repository: NoteRepository | null = null
+let isQuitting = false
 
 function isTrustedRenderer(url: string): boolean {
   if (process.env.ELECTRON_RENDERER_URL) return url.startsWith(process.env.ELECTRON_RENDERER_URL)
@@ -63,7 +67,22 @@ app.on('second-instance', () => {
 
 app.whenReady().then(() => {
   registerBootstrapIpc()
+  repository = registerDesktopApi({
+    userDataPath: app.getPath('userData'),
+    isTrustedRenderer,
+    getMainWindow: () => mainWindow,
+    hideMainWindow: () => mainWindow?.hide(),
+    quitApp: () => {
+      isQuitting = true
+      app.quit()
+    }
+  })
   mainWindow = createWindow()
+  mainWindow.on('close', (event) => {
+    if (isQuitting) return
+    event.preventDefault()
+    mainWindow?.hide()
+  })
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) mainWindow = createWindow()
@@ -72,4 +91,9 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
+})
+
+app.on('before-quit', () => {
+  isQuitting = true
+  repository?.close()
 })

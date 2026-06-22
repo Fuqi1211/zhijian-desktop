@@ -11,18 +11,20 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "electron-vite dev",
-    "start": "electron-vite preview",
+    "dev": "npm run rebuild:electron && electron-vite dev",
+    "start": "npm run rebuild:electron && electron-vite preview",
     "build": "npm run typecheck && electron-vite build",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
     "lint": "eslint .",
     "format:check": "prettier --check .",
-    "test": "vitest run",
+    "test": "npm run rebuild:node && vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "dist:win": "npm run build && electron-builder --win nsis --x64",
-    "postinstall": "electron-builder install-app-deps"
+    "dist:win": "npm run rebuild:electron && npm run build && electron-builder --win nsis --x64",
+    "rebuild:node": "npm rebuild better-sqlite3",
+    "rebuild:electron": "electron-builder install-app-deps",
+    "postinstall": "npm run rebuild:electron"
   },
   "dependencies": {
     "@tiptap/extension-link": "latest",
