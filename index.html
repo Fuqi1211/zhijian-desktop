@@ -62,7 +62,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    button, input { font: inherit; }
+    button, input, select { font: inherit; }
     button { color: inherit; }
 
     .app {
@@ -424,6 +424,47 @@
       padding: 11px 16px 14px;
       border-top: 1px solid var(--line);
     }
+
+    .theme-control {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 39px;
+      padding: 0 7px;
+      color: var(--ink-soft);
+      background: color-mix(in srgb, var(--sheet) 58%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      transition: color 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .theme-control:hover {
+      color: var(--ink);
+      background: var(--sheet);
+      border-color: var(--line-strong);
+    }
+
+    .theme-control:focus-within {
+      border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 62%, transparent);
+    }
+
+    .theme-control svg { width: 16px; height: 16px; flex: 0 0 auto; }
+
+    #themeSelect {
+      width: 54px;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #themeSelect option { color: var(--ink); background: var(--sheet); }
 
     .new-note {
       display: flex;
@@ -1005,9 +1046,15 @@
       <div class="notes-list" id="notesList" role="listbox" aria-label="笔记列表"></div>
 
       <footer class="sidebar-footer">
-        <button class="icon-button" id="themeButton" title="切换明暗主题" aria-label="切换明暗主题">
-          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
-        </button>
+        <label class="theme-control" title="选择主题模式">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l5 3"/></svg>
+          <span class="sr-only">主题模式</span>
+          <select id="themeSelect" aria-label="主题模式">
+            <option value="auto">随时间</option>
+            <option value="light">浅色</option>
+            <option value="dark">深色</option>
+          </select>
+        </label>
         <button class="icon-button" id="importButton" title="导入 JSON" aria-label="导入笔记">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v3h16v-3"/></svg>
         </button>
@@ -1096,7 +1143,8 @@
       'use strict';
 
       const STORAGE_KEY = 'zhijian.notes.v1';
-      const THEME_KEY = 'zhijian.theme.v1';
+      const THEME_MODE_KEY = 'zhijian.theme.mode.v2';
+      const LEGACY_THEME_KEY = 'zhijian.theme.v1';
       const RECOMMENDED_TAGS = ['工作', '学习', '生活', '灵感', '计划', '阅读', '待办', '项目'];
       const ALLOWED_TAGS = new Set(['P','DIV','BR','B','STRONG','I','EM','U','S','H1','H2','H3','BLOCKQUOTE','UL','OL','LI','A','CODE','PRE','SPAN']);
       const $ = (selector) => document.querySelector(selector);
@@ -1112,7 +1160,7 @@
         charCount: $('#charCount'), readTime: $('#readTime'), editorFooter: $('#editorFooter'),
         toast: $('#toast'), toastText: $('#toastText'), undo: $('#undoButton'),
         commandDialog: $('#commandDialog'), commandInput: $('#commandInput'),
-        commandResults: $('#commandResults'), fileInput: $('#fileInput')
+        commandResults: $('#commandResults'), fileInput: $('#fileInput'), themeSelect: $('#themeSelect')
       };
 
       const now = Date.now();
@@ -1147,6 +1195,7 @@
       let lastDeleted = null;
       let currentTagSuggestions = [];
       let activeSuggestionIndex = 0;
+      let themeMode = 'auto';
 
       function loadNotes() {
         try {
@@ -1534,14 +1583,31 @@
         applyFormat('createLink', normalized);
       }
 
-      function setTheme(theme) {
-        document.documentElement.dataset.theme = theme;
-        localStorage.setItem(THEME_KEY, theme);
-        $('#themeButton').setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+      function getTimedTheme(date = new Date()) {
+        const hour = date.getHours();
+        return hour >= 6 && hour < 18 ? 'light' : 'dark';
       }
 
-      function toggleTheme() {
-        setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+      function resolveTheme(mode, date = new Date()) {
+        return mode === 'auto' ? getTimedTheme(date) : mode;
+      }
+
+      function applyTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+      }
+
+      function setThemeMode(mode, persistMode = true) {
+        themeMode = ['auto', 'light', 'dark'].includes(mode) ? mode : 'auto';
+        applyTheme(resolveTheme(themeMode));
+        elements.themeSelect.value = themeMode;
+        elements.themeSelect.title = themeMode === 'auto'
+          ? '当前随时间切换：06:00–18:00 浅色，其余时间深色'
+          : `当前为${themeMode === 'light' ? '浅色' : '深色'}主题`;
+        if (persistMode) localStorage.setItem(THEME_MODE_KEY, themeMode);
+      }
+
+      function refreshTimedTheme() {
+        if (themeMode === 'auto') applyTheme(getTimedTheme());
       }
 
       function exportNotes() {
@@ -1677,7 +1743,7 @@
       $('#pinButton').addEventListener('click', togglePin);
       $('#deleteButton').addEventListener('click', deleteCurrent);
       $('#backButton').addEventListener('click', () => elements.app.classList.remove('note-open'));
-      $('#themeButton').addEventListener('click', toggleTheme);
+      elements.themeSelect.addEventListener('change', () => setThemeMode(elements.themeSelect.value));
       $('#exportButton').addEventListener('click', exportNotes);
       $('#importButton').addEventListener('click', () => elements.fileInput.click());
       elements.fileInput.addEventListener('change', () => importNotes(elements.fileInput.files[0]));
@@ -1708,10 +1774,12 @@
         const note = currentNote();
         if (note) elements.updatedText.textContent = `${relativeTime(note.updatedAt)}编辑`;
         renderList();
+        refreshTimedTheme();
       }, 60000);
 
-      const preferredTheme = localStorage.getItem(THEME_KEY) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      setTheme(preferredTheme);
+      const savedThemeMode = localStorage.getItem(THEME_MODE_KEY);
+      setThemeMode(['auto', 'light', 'dark'].includes(savedThemeMode) ? savedThemeMode : 'auto');
+      localStorage.removeItem(LEGACY_THEME_KEY);
       persist();
       renderAll(true);
 
@@ -1721,7 +1789,12 @@
         selectNote,
         flushSave,
         sanitizeHTML,
-        storageKey: STORAGE_KEY
+        getTimedTheme,
+        resolveTheme,
+        setThemeMode,
+        getThemeMode: () => themeMode,
+        storageKey: STORAGE_KEY,
+        themeModeKey: THEME_MODE_KEY
       };
     })();
   </script>
