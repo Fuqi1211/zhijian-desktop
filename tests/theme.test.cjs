@@ -70,3 +70,10 @@ test('footer exposes accessible automatic, light, and dark options', () => {
   assert.match(html, /<option value="dark">深色<\/option>/);
   assert.doesNotMatch(html, /id="themeButton"/);
 });
+
+test('sidebar constrains its height and delegates scrolling to the notes list', () => {
+  assert.match(html, /\.app \{[^}]*grid-template-rows: minmax\(0, 1fr\);[^}]*overflow: hidden;/s);
+  assert.match(html, /\.sidebar \{[^}]*min-height: 0;[^}]*overflow: hidden;/s);
+  assert.match(html, /\.notes-list \{[^}]*min-height: 0;[^}]*overflow-y: auto;[^}]*overscroll-behavior: contain;/s);
+  assert.match(html, /\.sidebar-footer \{[^}]*flex: 0 0 auto;/s);
+});
