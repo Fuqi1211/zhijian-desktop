@@ -12,6 +12,7 @@ import type {
   Palette,
   SaveStatus,
   TagStat,
+  UpdateState,
   ThemeMode
 } from '../../shared/contracts'
 import { useUiStore } from './store'
@@ -79,6 +80,7 @@ export function App(): React.JSX.Element {
   const [tagInput, setTagInput] = useState('')
   const [settings, setSettings] = useState<AppSettings | null>(null)
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
+  const [updateState, setUpdateState] = useState<UpdateState>({ phase: 'idle', message: '尚未检查更新' })
   const [toast, setToast] = useState<{ message: string; undoId?: string } | null>(null)
   const [commandQuery, setCommandQuery] = useState('')
   const [commandResults, setCommandResults] = useState<NoteSummary[]>([])
@@ -174,6 +176,7 @@ export function App(): React.JSX.Element {
         setSettings(loaded)
         applySettings(loaded)
       }),
+      window.desktop.updater.getState().then(setUpdateState),
       loadNotes(),
       loadTags()
     ]).catch((err) => setError(err instanceof Error ? err.message : '初始化失败'))
@@ -290,6 +293,27 @@ export function App(): React.JSX.Element {
     const result = await window.desktop.files.exportJson()
     if (!result.canceled) setToast({ message: '备份已导出' })
   }
+
+  async function checkUpdates(): Promise<void> {
+    setUpdateState(await window.desktop.updater.check())
+  }
+
+  useEffect(() => {
+    const offNewNote = window.desktop.app.onNewNote(() => void createNote())
+    const offOpenCommand = window.desktop.app.onOpenCommand(() => setCommandOpen(true))
+    const offImport = window.desktop.app.onImportJson(() => void importNotes())
+    const offExport = window.desktop.app.onExportJson(() => void exportNotes())
+    const offShortcutError = window.desktop.app.onShortcutError((message) => setError(message))
+    const offUpdate = window.desktop.updater.onState(setUpdateState)
+    return () => {
+      offNewNote()
+      offOpenCommand()
+      offImport()
+      offExport()
+      offShortcutError()
+      offUpdate()
+    }
+  }, [])
 
   function addTag(value: string): void {
     const tag = cleanTag(value)
@@ -449,6 +473,10 @@ export function App(): React.JSX.Element {
           <button className="icon-button" onClick={() => void exportNotes()} title="导出备份">
             ⇡
           </button>
+          <button className="icon-button" onClick={() => void checkUpdates()} title={updateState.message}>
+            ↻
+          </button>
+          <span className="update-status">{updateState.phase === 'downloaded' ? '可安装更新' : updateState.message}</span>
           <button className="new-note" onClick={() => void createNote()}>
             ＋ 新建笔记
           </button>

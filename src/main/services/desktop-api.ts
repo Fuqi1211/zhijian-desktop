@@ -20,8 +20,6 @@ import {
 import { isSafeExternalUrl } from '../../shared/domain'
 import { createRepository, type NoteRepository } from '../db/repository'
 
-const updateState: UpdateState = { phase: 'idle', message: '尚未检查更新' }
-
 function assertTrusted(event: IpcMainInvokeEvent, isTrustedRenderer: (url: string) => boolean): void {
   const url = event.senderFrame?.url ?? ''
   if (!isTrustedRenderer(url)) throw new Error('Untrusted renderer')
@@ -33,6 +31,11 @@ export function registerDesktopApi(options: {
   getMainWindow: () => BrowserWindow | null
   hideMainWindow: () => void
   quitApp: () => void
+  updater: {
+    getState: () => UpdateState
+    check: () => Promise<UpdateState>
+    install: () => void
+  }
 }): NoteRepository {
   const repository = createRepository(options.userDataPath)
   const handle = <Args extends unknown[], Result>(
@@ -106,9 +109,9 @@ export function registerDesktopApi(options: {
     await shell.openExternal(url)
   })
 
-  handle('updater:get-state', () => updateState)
-  handle('updater:check', () => ({ ...updateState, phase: 'checking', message: '更新系统将在桌面集成阶段启用' }))
-  handle('updater:install', () => undefined)
+  handle('updater:get-state', () => options.updater.getState())
+  handle('updater:check', () => options.updater.check())
+  handle('updater:install', () => options.updater.install())
 
   return repository
 }

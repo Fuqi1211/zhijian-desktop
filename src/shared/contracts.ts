@@ -197,6 +197,11 @@ export interface DesktopApi {
     hide: () => Promise<void>
     quit: () => Promise<void>
     openExternal: (url: string) => Promise<void>
+    onNewNote: (callback: () => void) => () => void
+    onOpenCommand: (callback: () => void) => () => void
+    onImportJson: (callback: () => void) => () => void
+    onExportJson: (callback: () => void) => () => void
+    onShortcutError: (callback: (message: string) => void) => () => void
   }
   updater: {
     getState: () => Promise<UpdateState>

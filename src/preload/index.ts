@@ -25,7 +25,32 @@ const desktop: DesktopApi = {
     show: () => ipcRenderer.invoke('app:show'),
     hide: () => ipcRenderer.invoke('app:hide'),
     quit: () => ipcRenderer.invoke('app:quit'),
-    openExternal: (url) => ipcRenderer.invoke('app:open-external', url)
+    openExternal: (url) => ipcRenderer.invoke('app:open-external', url),
+    onNewNote: (callback: () => void) => {
+      const listener = (): void => callback()
+      ipcRenderer.on('app:new-note', listener)
+      return () => ipcRenderer.removeListener('app:new-note', listener)
+    },
+    onOpenCommand: (callback: () => void) => {
+      const listener = (): void => callback()
+      ipcRenderer.on('app:open-command', listener)
+      return () => ipcRenderer.removeListener('app:open-command', listener)
+    },
+    onImportJson: (callback: () => void) => {
+      const listener = (): void => callback()
+      ipcRenderer.on('app:import-json', listener)
+      return () => ipcRenderer.removeListener('app:import-json', listener)
+    },
+    onExportJson: (callback: () => void) => {
+      const listener = (): void => callback()
+      ipcRenderer.on('app:export-json', listener)
+      return () => ipcRenderer.removeListener('app:export-json', listener)
+    },
+    onShortcutError: (callback: (message: string) => void) => {
+      const listener = (_event: Electron.IpcRendererEvent, message: string): void => callback(message)
+      ipcRenderer.on('app:shortcut-error', listener)
+      return () => ipcRenderer.removeListener('app:shortcut-error', listener)
+    }
   },
   updater: {
     getState: () => ipcRenderer.invoke('updater:get-state'),

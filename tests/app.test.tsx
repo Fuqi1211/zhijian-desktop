@@ -91,7 +91,12 @@ function installDesktopMock(overrides: Partial<DesktopApi> = {}): DesktopApi {
       show: vi.fn(async () => undefined),
       hide: vi.fn(async () => undefined),
       quit: vi.fn(async () => undefined),
-      openExternal: vi.fn(async () => undefined)
+      openExternal: vi.fn(async () => undefined),
+      onNewNote: vi.fn(() => () => undefined),
+      onOpenCommand: vi.fn(() => () => undefined),
+      onImportJson: vi.fn(() => () => undefined),
+      onExportJson: vi.fn(() => () => undefined),
+      onShortcutError: vi.fn(() => () => undefined)
     },
     updater: {
       getState: vi.fn(async () => ({ phase: 'idle', message: 'ok' })),
