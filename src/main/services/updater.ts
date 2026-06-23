@@ -1,7 +1,9 @@
 import { app, BrowserWindow } from 'electron'
 import log from 'electron-log'
-import { autoUpdater } from 'electron-updater'
+import updaterPackage from 'electron-updater'
 import type { UpdateState } from '../../shared/contracts'
+
+const { autoUpdater } = updaterPackage
 
 export interface UpdaterController {
   getState: () => UpdateState

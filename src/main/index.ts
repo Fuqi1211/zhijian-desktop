@@ -23,6 +23,21 @@ let isQuitting = false
 let hasShownTrayNotice = false
 let saveWindowTimer: ReturnType<typeof setTimeout> | null = null
 
+if (process.env.ZHIJIAN_USER_DATA_DIR) {
+  app.setPath('userData', process.env.ZHIJIAN_USER_DATA_DIR)
+}
+
+if (process.env.ZHIJIAN_E2E === '1') {
+  process.on('uncaughtException', (error) => {
+    console.error(error)
+    app.exit(1)
+  })
+}
+
+function e2eLog(message: string): void {
+  if (process.env.ZHIJIAN_E2E === '1') console.error('[zhijian-e2e] ' + message)
+}
+
 function isTrustedRenderer(url: string): boolean {
   if (process.env.ELECTRON_RENDERER_URL) return url.startsWith(process.env.ELECTRON_RENDERER_URL)
   return url.startsWith('file://')
@@ -41,6 +56,7 @@ function sendNewNoteCommand(): void {
 }
 
 function createWindow(bounds?: AppSettings['windowBounds']): BrowserWindow {
+  e2eLog('createWindow:start')
   const options: BrowserWindowConstructorOptions = {
     width: bounds?.width ?? 1280,
     height: bounds?.height ?? 820,
@@ -52,7 +68,7 @@ function createWindow(bounds?: AppSettings['windowBounds']): BrowserWindow {
     backgroundColor: '#f3ede2',
     autoHideMenuBar: false,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true
@@ -61,6 +77,7 @@ function createWindow(bounds?: AppSettings['windowBounds']): BrowserWindow {
   const window = new BrowserWindow(options)
 
   window.once('ready-to-show', () => {
+    e2eLog('window:ready-to-show')
     if (bounds?.maximized) window.maximize()
     window.show()
   })
@@ -81,22 +98,25 @@ function createWindow(bounds?: AppSettings['windowBounds']): BrowserWindow {
   return window
 }
 
+function saveWindowStateNow(): void {
+  if (!mainWindow || !repository) return
+  if (mainWindow.isDestroyed()) return
+  const bounds = mainWindow.getBounds()
+  repository.updateSettings({
+    windowBounds: {
+      width: bounds.width,
+      height: bounds.height,
+      x: bounds.x,
+      y: bounds.y,
+      maximized: mainWindow.isMaximized()
+    }
+  })
+}
+
 function scheduleWindowStateSave(): void {
   if (!mainWindow || !repository) return
   if (saveWindowTimer) clearTimeout(saveWindowTimer)
-  saveWindowTimer = setTimeout(() => {
-    if (!mainWindow || !repository || mainWindow.isDestroyed()) return
-    const bounds = mainWindow.getBounds()
-    repository.updateSettings({
-      windowBounds: {
-        width: bounds.width,
-        height: bounds.height,
-        x: bounds.x,
-        y: bounds.y,
-        maximized: mainWindow.isMaximized()
-      }
-    })
-  }, 450)
+  saveWindowTimer = setTimeout(saveWindowStateNow, 450)
 }
 
 function createTray(): void {
@@ -201,7 +221,8 @@ function registerBootstrapIpc(): void {
   })
 }
 
-const hasSingleInstanceLock = app.requestSingleInstanceLock()
+const hasSingleInstanceLock =
+  process.env.ZHIJIAN_DISABLE_SINGLE_INSTANCE === '1' || app.requestSingleInstanceLock()
 if (!hasSingleInstanceLock) app.quit()
 
 app.setAppUserModelId('com.kiko3127.zhijian')
@@ -214,8 +235,10 @@ app.on('second-instance', () => {
 })
 
 app.whenReady().then(() => {
+  e2eLog('app:ready')
   registerBootstrapIpc()
   updater = createUpdaterController(() => mainWindow)
+  e2eLog('repository:start')
   repository = registerDesktopApi({
     userDataPath: app.getPath('userData'),
     isTrustedRenderer,
@@ -227,6 +250,7 @@ app.whenReady().then(() => {
     },
     updater
   })
+  e2eLog('repository:ready')
   mainWindow = createWindow(repository.getSettings().windowBounds)
   mainWindow.on('resize', scheduleWindowStateSave)
   mainWindow.on('move', scheduleWindowStateSave)
@@ -244,6 +268,7 @@ app.whenReady().then(() => {
   createApplicationMenu()
   createTray()
   registerGlobalShortcuts()
+  e2eLog('app:bootstrapped')
   setTimeout(() => void updater?.check(), 10000)
 
   app.on('activate', () => {
@@ -259,7 +284,7 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   isQuitting = true
   if (saveWindowTimer) clearTimeout(saveWindowTimer)
-  scheduleWindowStateSave()
+  saveWindowStateNow()
   globalShortcut.unregisterAll()
   tray?.destroy()
   repository?.close()
